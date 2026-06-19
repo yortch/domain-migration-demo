@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
 import os
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -21,7 +21,7 @@ TECH_EMAIL = 'tech@old.com'
 # Database connection using legacy_admin credentials
 DB_CONNECTION = os.getenv(
     'DATABASE_URL',
-    'oracle://legacy_admin:password@db.old.com:1521/PROD'
+    'mssql+pyodbc://legacy_admin:password@db.old.com:1433/LegacyMigration?driver=ODBC+Driver+18+for+SQL+Server&Encrypt=yes&TrustServerCertificate=yes'
 )
 engine = create_engine(DB_CONNECTION)
 
@@ -47,12 +47,12 @@ def get_users():
 def domain_usage_report():
     """Generate report of old.com domain usage"""
     with engine.connect() as conn:
-        result = conn.execute("""
-            SELECT user_name, email, last_login 
-            FROM admin_users 
+        result = conn.execute(text("""
+            SELECT username AS user_name, email, created_at AS last_login
+            FROM legacy.admin_users
             WHERE email LIKE '%@old.com'
-        """)
-        users = [dict(row) for row in result]
+        """))
+        users = [dict(row._mapping) for row in result]
     
     return jsonify({
         'report': 'Domain Migration Audit',

@@ -23,7 +23,7 @@ public class PaymentProcessorService {
     @Value("${admin.email:admin@old.com}")
     private String adminEmail;
     
-    @Value("${db.connection.string:jdbc:oracle:thin:legacy_admin/password@db.old.com:1521:PROD}")
+    @Value("${db.connection.string:jdbc:sqlserver://db.old.com:1433;databaseName=LegacyMigration;user=legacy_admin;password=password;encrypt=true;trustServerCertificate=true}")
     private String dbConnectionString;
 
     private final RestTemplate restTemplate = new RestTemplate();

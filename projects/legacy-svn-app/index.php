@@ -10,9 +10,10 @@ define('API_ENDPOINT', 'https://api.old.com/rpc/');
 define('AUTH_HOST', 'auth.old.com');
 define('AUTH_ENDPOINT', 'https://auth.old.com/validate');
 define('DB_HOST', 'db.old.com');
+define('DB_PORT', 1433);
 define('DB_USER', 'legacy_admin');
 define('DB_PASSWORD', $_ENV['DB_PASS']);
-define('DB_NAME', 'legacy_app');
+define('DB_NAME', 'LegacyMigration');
 
 define('SUPPORT_EMAIL', 'support@old.com');
 define('ADMIN_EMAIL', 'admin@old.com');
@@ -20,9 +21,17 @@ define('TECH_CONTACT', 'tech@old.com');
 
 // Legacy database functions
 function connectDatabase() {
-    $conn = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+    $serverName = DB_HOST . ',' . DB_PORT;
+    $connectionInfo = [
+        'Database' => DB_NAME,
+        'UID' => DB_USER,
+        'PWD' => DB_PASSWORD,
+        'Encrypt' => true,
+        'TrustServerCertificate' => true
+    ];
+    $conn = sqlsrv_connect($serverName, $connectionInfo);
     if (!$conn) {
-        die("Connection failed: " . mysqli_connect_error());
+        die("Connection failed: " . print_r(sqlsrv_errors(), true));
     }
     return $conn;
 }
@@ -95,10 +104,12 @@ function handleWebhook() {
     
     // Log webhook from old.com system
     $conn = connectDatabase();
-    $query = "INSERT INTO webhook_logs (source, data, timestamp) VALUES ('old.com', ?, NOW())";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param('s', json_encode($data));
-    $stmt->execute();
+    $query = "INSERT INTO legacy.audit_logs (action, user_name, source_domain, description) VALUES (?, ?, ?, ?)";
+    $params = ['Webhook Received', DB_USER, 'old.com', json_encode($data)];
+    $stmt = sqlsrv_query($conn, $query, $params);
+    if ($stmt === false) {
+        error_log("Webhook insert failed: " . print_r(sqlsrv_errors(), true));
+    }
     
     http_response_code(200);
 }
@@ -122,7 +133,7 @@ function handleWebhook() {
         <li>Database: db.old.com - 
             <?php 
             $conn = connectDatabase();
-            echo $conn ? 'Connected' : 'Failed'; 
+            echo $conn !== false ? 'Connected' : 'Failed'; 
             ?>
         </li>
         <li>Auth Service: auth.old.com - 

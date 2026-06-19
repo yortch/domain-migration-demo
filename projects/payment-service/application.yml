@@ -2,10 +2,10 @@ spring:
   application:
     name: payment-service
   datasource:
-    url: jdbc:oracle:thin:@db.old.com:1521:PROD
+    url: jdbc:sqlserver://db.old.com:1433;databaseName=LegacyMigration;encrypt=true;trustServerCertificate=true
     username: legacy_admin
     password: ${DB_PASSWORD}
-    driver-class-name: oracle.jdbc.OracleDriver
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 
 payment:
   gateway:
