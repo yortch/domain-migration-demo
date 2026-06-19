@@ -24,5 +24,6 @@ Produce a database discovery helper script that prints SQL Server migration SQL 
 - Keep SQL organized and easy to review in sections.
 
 ## Acceptance checks
+- Script is saved as `scripts/database_discovery.sh`.
 - Script prints SQL that covers all required discovery categories and final sqlcmd guidance.
 - No side effects beyond terminal output.

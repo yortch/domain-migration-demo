@@ -3,6 +3,8 @@
 You are generating a Bash script for Linux/macOS named `discover_domains.sh`.
 Return only the script in one fenced bash block.
 
+Save the generated script to `scripts/discover_domains.sh`.
+
 ## Goal
 Create a discovery scanner that searches a repository for references to:
 - domain: `old.com`
