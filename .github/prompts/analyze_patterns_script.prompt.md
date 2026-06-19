@@ -9,28 +9,35 @@ Analyze domain-migration reference patterns and emit a JSON report file with:
 - summary counters
 
 ## Algorithm requirements
-1. Recursively scan the repository for legacy migration tokens, at minimum:
+1. Recursively scan only these project directories (under `projects/`) for legacy migration tokens:
+- `admin-portal`
+- `ecommerce-web`
+- `legacy-svn-app`
+- `payment-service`
+- `database-schema`
+- `configs`
+2. Search for legacy migration tokens, at minimum:
 - `old.com`
 - `legacy_admin`
 - `@old.com`
-2. Classify findings into three categories:
+3. Classify findings into three categories:
 - code
 - configuration
 - database
-3. Build a timestamped JSON (or JSON-like) report in the current directory.
-4. The report schema must include:
+4. Build a timestamped JSON (or JSON-like) report in the current directory.
+5. The report schema must include:
 - analysis timestamp
 - pattern buckets for the three categories
 - summary counters
-5. For each category bucket, include representative findings with file/location and captured content or context.
-6. Summary counters must quantify at least:
+6. For each category bucket, include representative findings with file/location and captured content or context.
+7. Summary counters must quantify at least:
 - code hits
 - config hits
 - database hits
 - legacy username references
 - email-domain references
-7. Print a completion message with the report path.
-8. Print the generated report content to stdout for immediate inspection.
+8. Print a completion message with the report path.
+9. Print the generated report content to stdout for immediate inspection.
 
 ## Constraints
 - Keep implementation shell-native and dependency-light.
