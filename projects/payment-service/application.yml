@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: payment-service
+  datasource:
+    url: jdbc:oracle:thin:@db.old.com:1521:PROD
+    username: legacy_admin
+    password: ${DB_PASSWORD}
+    driver-class-name: oracle.jdbc.OracleDriver
+
+payment:
+  gateway:
+    url: https://gateway.old.com/api
+    timeout: 30000
+    retries: 3
+  webhook:
+    url: https://webhook.old.com/payment/update
+    secret: ${WEBHOOK_SECRET}
+  legacy:
+    system:
+      url: https://legacy.old.com/services
+      apiKey: ${LEGACY_API_KEY}
+
+auth:
+  oauth2:
+    tokenUrl: https://auth.old.com/oauth/token
+    clientId: payment-service
+    clientSecret: ${OAUTH_CLIENT_SECRET}
+    scope: payment:write,payment:read
+
+notifications:
+  email:
+    adminEmail: admin@old.com
+    smtpServer: mail.old.com
+    fromAddress: alerts@old.com
+
+monitoring:
+  health:
+    checkUrl: https://health.old.com/status
+  metrics:
+    endpoint: https://metrics.old.com/push
+    environment: prod
+
+ssl:
+  truststore: /etc/ssl/certs/old.com.jks
+  truststore-password: ${SSL_PASSWORD}

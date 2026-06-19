@@ -1,0 +1,54 @@
+version: '3.8'
+services:
+  api:
+    image: api-service:latest
+    environment:
+      API_HOST: api.old.com
+      API_PORT: 443
+      DB_HOST: db.old.com
+      DB_USER: legacy_admin
+      AUTH_SERVICE: https://auth.old.com/oauth
+      WEBHOOK_URL: https://webhook.old.com/update
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+      - auth-service
+
+  database:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Developer
+      MSSQL_SA_PASSWORD: ${SQLSERVER_SA_PASSWORD}
+    volumes:
+      - db-data:/var/opt/mssql
+    ports:
+      - "1433:1433"
+
+  auth-service:
+    image: auth-service:latest
+    environment:
+      AUTH_HOST: auth.old.com
+      TOKEN_ISSUER: https://auth.old.com
+      JWT_AUDIENCE: https://api.old.com
+      ADMIN_USER: legacy_admin
+      ADMIN_EMAIL: admin@old.com
+
+  nginx:
+    image: nginx:latest
+    environment:
+      UPSTREAM_API: http://api:8080
+      UPSTREAM_AUTH: http://auth-service:8080
+      SERVER_NAME: old.com
+      SSL_CERT: /etc/nginx/ssl/old.com.crt
+      SSL_KEY: /etc/nginx/ssl/old.com.key
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - api
+      - auth-service
+
+volumes:
+  db-data:

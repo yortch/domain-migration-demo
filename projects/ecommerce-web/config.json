@@ -1,0 +1,47 @@
+{
+  "application": {
+    "name": "ecommerce-platform",
+    "version": "2.4.1",
+    "environment": "production"
+  },
+  "api": {
+    "baseUrl": "https://api.old.com",
+    "authEndpoint": "https://auth.old.com/v2/token",
+    "timeout": 30000,
+    "retries": 3,
+    "notificationUrl": "https://notifications.old.com/webhook"
+  },
+  "cdn": {
+    "primary": "https://cdn.old.com/assets",
+    "fallback": "https://cdn-backup.old.com/assets",
+    "imageOptimization": "https://images.old.com/optimize"
+  },
+  "tracking": {
+    "analytics": "https://analytics.old.com/track",
+    "crashReporting": "https://sentry.old.com/api/123/store/",
+    "sessionRecording": "https://recordings.old.com/sessions"
+  },
+  "integrations": {
+    "stripe": {
+      "webhookUrl": "https://payments.old.com/stripe/webhook",
+      "publicKey": "pk_live_xxx"
+    },
+    "sendgrid": {
+      "apiUrl": "https://email.old.com/send",
+      "fromEmail": "noreply@old.com"
+    },
+    "slack": {
+      "webhookUrl": "https://alerts.old.com/slack/warnings"
+    }
+  },
+  "security": {
+    "corsOrigins": ["https://www.old.com", "https://admin.old.com", "https://old.com"],
+    "csrfWhitelist": ["old.com", "*.old.com"],
+    "cspHeaders": "default-src 'self' *.old.com"
+  },
+  "admin": {
+    "dashboardUrl": "https://admin.old.com/dashboard",
+    "adminUser": "legacy_admin",
+    "supportEmail": "admin@old.com"
+  }
+}
